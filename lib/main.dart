@@ -15,7 +15,7 @@ void main() async {
   );
 }
 
-const appTitle = 'Pizza Value';
+const appTitle = 'Appy Pizza';
 
 class PizzaValueApp extends StatelessWidget {
   final PizzaValueStore store;

@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:mhu_dart_commons/commons.dart';
 import 'package:mhu_flutter_commons/commons.dart';
 import 'package:pizza_flutter/model.dart';
 import 'package:pizza_flutter/pages/calculation.dart';
+import 'package:pizza_flutter/pages/settings.dart';
 import 'package:pizza_flutter/store.dart';
 import 'package:timeago_flutter/timeago_flutter.dart';
 
@@ -30,6 +33,22 @@ class PizzaValueHome extends StatelessWidget {
               .reversed,
         ),
         builder: (context, value) {
+          if (value.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('No calculations yet.'),
+                  ElevatedButton(
+                    onPressed: () {
+                      addCalculation(context);
+                    },
+                    child: const Text('Add Calculation'),
+                  ),
+                ],
+              ),
+            );
+          }
           return ListView(
             children: value.map((calculation) {
               return ListTile(
@@ -54,7 +73,7 @@ class PizzaValueHome extends StatelessWidget {
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
               onPressed: () {
@@ -62,6 +81,19 @@ class PizzaValueHome extends StatelessWidget {
               },
               icon: const Icon(Icons.add),
             ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SettingsPage(
+                      store: store,
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.settings),
+            )
           ],
         ),
       ),
@@ -135,7 +167,10 @@ class PizzaValueHome extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CalculationPage(rxVar: calcVar),
+        builder: (context) => CalculationPage(
+          rxVar: calcVar,
+          store: store,
+        ),
       ),
     );
   }

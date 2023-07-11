@@ -14,6 +14,18 @@ _$_PizzaValueModel _$$_PizzaValueModelFromJson(Map<String, dynamic> json) =>
                 PizzaCalculation.fromJson(e as Map<String, dynamic>)),
           ) ??
           const {},
+      sizeSeq: json['sizeSeq'] as int? ?? 5,
+      sizes: (json['sizes'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(int.parse(k), e as String),
+          ) ??
+          const {
+            0: 'Small',
+            1: 'Normal',
+            2: 'Medium',
+            3: 'Large',
+            4: 'Extra Large',
+            5: 'Family'
+          },
     );
 
 Map<String, dynamic> _$$_PizzaValueModelToJson(_$_PizzaValueModel instance) =>
@@ -21,6 +33,8 @@ Map<String, dynamic> _$$_PizzaValueModelToJson(_$_PizzaValueModel instance) =>
       'calculationSeq': instance.calculationSeq,
       'calculations':
           instance.calculations.map((k, e) => MapEntry(k.toString(), e)),
+      'sizeSeq': instance.sizeSeq,
+      'sizes': instance.sizes.map((k, e) => MapEntry(k.toString(), e)),
     };
 
 _$_PizzaCalculation _$$_PizzaCalculationFromJson(Map<String, dynamic> json) =>

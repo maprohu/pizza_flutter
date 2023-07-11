@@ -10,6 +10,15 @@ class PizzaValueModel with _$PizzaValueModel {
   const factory PizzaValueModel({
     @Default(0) int calculationSeq,
     @Default({}) Map<int, PizzaCalculation> calculations,
+    @Default(5) int sizeSeq,
+    @Default({
+      0: 'Small',
+      1: 'Normal',
+      2: 'Medium',
+      3: 'Large',
+      4: 'Extra Large',
+      5: 'Family',
+    }) Map<int, String> sizes,
   }) = _PizzaValueModel;
 
   factory PizzaValueModel.fromJson(Map<String, dynamic> json) =>
@@ -39,4 +48,10 @@ class PizzaCalculationItem with _$PizzaCalculationItem {
 
   factory PizzaCalculationItem.fromJson(Map<String, dynamic> json) =>
       _$PizzaCalculationItemFromJson(json);
+
+  static const defaultValue = PizzaCalculationItem(
+    label: '',
+    size: 0,
+    price: 0,
+  );
 }

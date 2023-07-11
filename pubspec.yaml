@@ -38,7 +38,7 @@ flutter:
   uses-material-design: true
 
 mhu:
-  title: Pizza Value
+  title: Appy Pizza
   icon: https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/local_pizza/default/48px.svg
 
 flutter_native_splash:

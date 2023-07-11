@@ -23,6 +23,8 @@ mixin _$PizzaValueModel {
   int get calculationSeq => throw _privateConstructorUsedError;
   Map<int, PizzaCalculation> get calculations =>
       throw _privateConstructorUsedError;
+  int get sizeSeq => throw _privateConstructorUsedError;
+  Map<int, String> get sizes => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,7 +38,11 @@ abstract class $PizzaValueModelCopyWith<$Res> {
           PizzaValueModel value, $Res Function(PizzaValueModel) then) =
       _$PizzaValueModelCopyWithImpl<$Res, PizzaValueModel>;
   @useResult
-  $Res call({int calculationSeq, Map<int, PizzaCalculation> calculations});
+  $Res call(
+      {int calculationSeq,
+      Map<int, PizzaCalculation> calculations,
+      int sizeSeq,
+      Map<int, String> sizes});
 }
 
 /// @nodoc
@@ -54,6 +60,8 @@ class _$PizzaValueModelCopyWithImpl<$Res, $Val extends PizzaValueModel>
   $Res call({
     Object? calculationSeq = null,
     Object? calculations = null,
+    Object? sizeSeq = null,
+    Object? sizes = null,
   }) {
     return _then(_value.copyWith(
       calculationSeq: null == calculationSeq
@@ -64,6 +72,14 @@ class _$PizzaValueModelCopyWithImpl<$Res, $Val extends PizzaValueModel>
           ? _value.calculations
           : calculations // ignore: cast_nullable_to_non_nullable
               as Map<int, PizzaCalculation>,
+      sizeSeq: null == sizeSeq
+          ? _value.sizeSeq
+          : sizeSeq // ignore: cast_nullable_to_non_nullable
+              as int,
+      sizes: null == sizes
+          ? _value.sizes
+          : sizes // ignore: cast_nullable_to_non_nullable
+              as Map<int, String>,
     ) as $Val);
   }
 }
@@ -76,7 +92,11 @@ abstract class _$$_PizzaValueModelCopyWith<$Res>
       __$$_PizzaValueModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int calculationSeq, Map<int, PizzaCalculation> calculations});
+  $Res call(
+      {int calculationSeq,
+      Map<int, PizzaCalculation> calculations,
+      int sizeSeq,
+      Map<int, String> sizes});
 }
 
 /// @nodoc
@@ -92,6 +112,8 @@ class __$$_PizzaValueModelCopyWithImpl<$Res>
   $Res call({
     Object? calculationSeq = null,
     Object? calculations = null,
+    Object? sizeSeq = null,
+    Object? sizes = null,
   }) {
     return _then(_$_PizzaValueModel(
       calculationSeq: null == calculationSeq
@@ -102,6 +124,14 @@ class __$$_PizzaValueModelCopyWithImpl<$Res>
           ? _value._calculations
           : calculations // ignore: cast_nullable_to_non_nullable
               as Map<int, PizzaCalculation>,
+      sizeSeq: null == sizeSeq
+          ? _value.sizeSeq
+          : sizeSeq // ignore: cast_nullable_to_non_nullable
+              as int,
+      sizes: null == sizes
+          ? _value._sizes
+          : sizes // ignore: cast_nullable_to_non_nullable
+              as Map<int, String>,
     ));
   }
 }
@@ -111,8 +141,18 @@ class __$$_PizzaValueModelCopyWithImpl<$Res>
 class _$_PizzaValueModel implements _PizzaValueModel {
   const _$_PizzaValueModel(
       {this.calculationSeq = 0,
-      final Map<int, PizzaCalculation> calculations = const {}})
-      : _calculations = calculations;
+      final Map<int, PizzaCalculation> calculations = const {},
+      this.sizeSeq = 5,
+      final Map<int, String> sizes = const {
+        0: 'Small',
+        1: 'Normal',
+        2: 'Medium',
+        3: 'Large',
+        4: 'Extra Large',
+        5: 'Family'
+      }})
+      : _calculations = calculations,
+        _sizes = sizes;
 
   factory _$_PizzaValueModel.fromJson(Map<String, dynamic> json) =>
       _$$_PizzaValueModelFromJson(json);
@@ -130,8 +170,20 @@ class _$_PizzaValueModel implements _PizzaValueModel {
   }
 
   @override
+  @JsonKey()
+  final int sizeSeq;
+  final Map<int, String> _sizes;
+  @override
+  @JsonKey()
+  Map<int, String> get sizes {
+    if (_sizes is EqualUnmodifiableMapView) return _sizes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_sizes);
+  }
+
+  @override
   String toString() {
-    return 'PizzaValueModel(calculationSeq: $calculationSeq, calculations: $calculations)';
+    return 'PizzaValueModel(calculationSeq: $calculationSeq, calculations: $calculations, sizeSeq: $sizeSeq, sizes: $sizes)';
   }
 
   @override
@@ -142,13 +194,19 @@ class _$_PizzaValueModel implements _PizzaValueModel {
             (identical(other.calculationSeq, calculationSeq) ||
                 other.calculationSeq == calculationSeq) &&
             const DeepCollectionEquality()
-                .equals(other._calculations, _calculations));
+                .equals(other._calculations, _calculations) &&
+            (identical(other.sizeSeq, sizeSeq) || other.sizeSeq == sizeSeq) &&
+            const DeepCollectionEquality().equals(other._sizes, _sizes));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, calculationSeq,
-      const DeepCollectionEquality().hash(_calculations));
+  int get hashCode => Object.hash(
+      runtimeType,
+      calculationSeq,
+      const DeepCollectionEquality().hash(_calculations),
+      sizeSeq,
+      const DeepCollectionEquality().hash(_sizes));
 
   @JsonKey(ignore: true)
   @override
@@ -167,7 +225,9 @@ class _$_PizzaValueModel implements _PizzaValueModel {
 abstract class _PizzaValueModel implements PizzaValueModel {
   const factory _PizzaValueModel(
       {final int calculationSeq,
-      final Map<int, PizzaCalculation> calculations}) = _$_PizzaValueModel;
+      final Map<int, PizzaCalculation> calculations,
+      final int sizeSeq,
+      final Map<int, String> sizes}) = _$_PizzaValueModel;
 
   factory _PizzaValueModel.fromJson(Map<String, dynamic> json) =
       _$_PizzaValueModel.fromJson;
@@ -176,6 +236,10 @@ abstract class _PizzaValueModel implements PizzaValueModel {
   int get calculationSeq;
   @override
   Map<int, PizzaCalculation> get calculations;
+  @override
+  int get sizeSeq;
+  @override
+  Map<int, String> get sizes;
   @override
   @JsonKey(ignore: true)
   _$$_PizzaValueModelCopyWith<_$_PizzaValueModel> get copyWith =>
