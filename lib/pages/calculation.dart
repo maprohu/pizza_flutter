@@ -1,10 +1,9 @@
 import 'package:collection/collection.dart';
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart';
 import 'package:mhu_dart_commons/commons.dart';
-import 'package:mhu_flutter_commons/commons.dart';
+import 'package:mhu_flutter_commons/mhu_flutter_commons.dart';
 import 'package:pizza_flutter/model.dart';
 import 'package:pizza_flutter/model_ext.dart';
 import 'package:pizza_flutter/pages/calculation_edit.dart';

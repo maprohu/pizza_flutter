@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mhu_dart_commons/commons.dart';
-import 'package:mhu_flutter_commons/commons.dart';
+import 'package:mhu_flutter_commons/mhu_flutter_commons.dart';
 import 'package:pizza_flutter/pages/calculation.dart';
 import 'package:pizza_flutter/pages/settings.dart';
 import 'package:pizza_flutter/store.dart';
