@@ -1,5 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart';
 import 'package:mhu_dart_commons/commons.dart';
 import 'package:mhu_flutter_commons/commons.dart';
@@ -9,13 +11,73 @@ import 'package:pizza_flutter/pages/calculation_edit.dart';
 
 import '../store.dart';
 
+part 'calculation.freezed.dart';
+
 NumberFormat numberFormat = NumberFormat()..minimumFractionDigits = 0;
+
+@freezed
+class ColumnDef<T extends Comparable<T>> with _$ColumnDef<T> {
+  const factory ColumnDef({
+    required double width,
+    required String label,
+    required T Function(PizzaCalculatedItem item) value,
+    required String Function(T value) cell,
+  }) = _ColumnDef;
+
+  static ColumnDef<num> number<T extends num>({
+    required String label,
+    required T Function(PizzaCalculatedItem item) value,
+  }) =>
+      ColumnDef(
+        width: 60,
+        label: label,
+        value: value,
+        cell: numberFormat.format,
+      );
+
+  Comparator<PizzaCalculatedItem> get comparator => value.toComparator;
+
+  String text(PizzaCalculatedItem item) {
+    return cell(value(item));
+  }
+
+  const ColumnDef._();
+}
+
+typedef SortState = ({
+  ColumnDef<Comparable<dynamic>> column,
+  bool ascending,
+  List<PizzaCalculatedItem> sorted,
+});
 
 class CalculationPage extends StatelessWidget {
   final RxVar<PizzaCalculation?> rxVar;
   final PizzaValueStore store;
 
-  const CalculationPage({super.key, required this.rxVar, required this.store});
+  CalculationPage({super.key, required this.rxVar, required this.store});
+
+  late final ColumnDef relativeCostColumn;
+
+  late final List<ColumnDef<Comparable<dynamic>>> columns = [
+    ColumnDef<String>(
+      label: 'Name',
+      width: 140,
+      value: (item) => item.item.label,
+      cell: identity,
+    ),
+    ColumnDef.number(
+      label: '⌀',
+      value: (PizzaCalculatedItem item) => item.item.size,
+    ),
+    ColumnDef.number(
+      label: '＄',
+      value: (PizzaCalculatedItem item) => item.item.price,
+    ),
+    ColumnDef.number(
+      label: '🏆',
+      value: (PizzaCalculatedItem item) => item.relativePrice,
+    ).also((e) => relativeCostColumn = e),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -44,108 +106,6 @@ class CalculationPage extends StatelessWidget {
                 ],
               ),
             );
-
-        final List<PizzaCalculatedItem> result = calculation.calculate;
-
-        final sort = ValueNotifier((
-          index: 3,
-          ascending: true,
-          items: result,
-        ));
-
-        void setSort(
-            int columnIndex, bool ascending, List<PizzaCalculatedItem> items) {
-          sort.value = (
-            index: columnIndex,
-            ascending: ascending,
-            items: items,
-          );
-        }
-
-        ({
-          DataColumn column,
-          DataCell Function(
-            BuildContext context,
-            PizzaCalculatedItem item,
-          ) cell,
-        }) column<T extends Comparable<T>>({
-          required String label,
-          required T Function(PizzaCalculatedItem item) value,
-          required DataCell Function(T value, VoidCallback? onTap) cell,
-          required bool numeric,
-        }) {
-          return (
-            column: DataColumn(
-              label: Text(label),
-              numeric: numeric,
-              onSort: (columnIndex, ascending) {
-                var sorted = result.sortedBy(value);
-                if (!ascending) {
-                  sorted = sorted.reversed.toList();
-                }
-
-                setSort(
-                  columnIndex,
-                  ascending,
-                  sorted,
-                );
-              },
-            ),
-            cell: (context, item) {
-              return cell(
-                value(item),
-                () => showItemEditor(context, item.id),
-              );
-            }
-          );
-        }
-
-        DataCell doubleCell(num value, VoidCallback? onTap) => DataCell(
-              Text(
-                numberFormat.format(value),
-              ),
-              onTap: onTap,
-            );
-
-        final columns = [
-          column<String>(
-            label: 'Name',
-            numeric: false,
-            value: (item) => item.item.label,
-            cell: (value, onTap) => DataCell(
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: 80,
-                ),
-                child: Text(
-                  value,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              onTap: onTap,
-            ),
-          ),
-          column<num>(
-            label: 'Diameter',
-            numeric: true,
-            value: (PizzaCalculatedItem item) => item.item.size,
-            cell: doubleCell,
-          ),
-          column<num>(
-            label: 'Price',
-            numeric: true,
-            value: (PizzaCalculatedItem item) => item.item.price,
-            cell: doubleCell,
-          ),
-          column<num>(
-            label: 'Relative\nCost',
-            numeric: true,
-            value: (PizzaCalculatedItem item) => item.relativePrice,
-            cell: doubleCell,
-          ),
-        ];
-
-        final dataColumns = columns.map((e) => e.column).toList();
 
         return Scaffold(
           appBar: AppBar(
@@ -220,30 +180,9 @@ class CalculationPage extends StatelessWidget {
               ],
             ),
           ),
-          body: result.isEmpty
+          body: calculation.items.isEmpty
               ? noItemsWidget()
-              : SingleChildScrollView(
-                  child: ValueListenableBuilder(
-                    valueListenable: sort,
-                    builder: (context, value, child) {
-                      return DataTable(
-                        columnSpacing: 0,
-                        sortColumnIndex: value.index,
-                        sortAscending: value.ascending,
-                        columns: dataColumns,
-                        rows: value.items.map((e) {
-                          return DataRow(
-                            key: ValueKey(e.id),
-                            cells: [
-                              for (final column in columns)
-                                column.cell(context, e),
-                            ],
-                          );
-                        }).toList(),
-                      );
-                    },
-                  ),
-                ),
+              : table(context, calculation),
         );
       },
     );
@@ -280,6 +219,137 @@ class CalculationPage extends StatelessWidget {
           },
           store: store,
         ),
+      ),
+    );
+  }
+
+  Widget table(
+    BuildContext context,
+    PizzaCalculation calculation,
+  ) {
+    final List<PizzaCalculatedItem> result = calculation.calculate;
+
+    SortState sortState({
+      required ColumnDef column,
+      required bool ascending,
+    }) {
+      final sorted = result.sorted(
+        column.comparator.ascending(ascending),
+      );
+
+      return (
+        column: column,
+        ascending: ascending,
+        sorted: sorted,
+      );
+    }
+
+    columns;
+    final sorted = rxw(
+      sortState(
+        column: relativeCostColumn,
+        ascending: true,
+      ),
+    );
+
+    const iconSize = 12.0;
+
+    return Center(
+      child: RxBuilder(
+        rxVal: sorted,
+        builder: (context, sort) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      width: 2,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ...columns.map((column) {
+                      final sorting = sort.column == column;
+
+                      return InkWell(
+                        onTap: () {
+                          final ascending = sorting ? !sort.ascending : true;
+                          sorted.value =
+                              sortState(column: column, ascending: ascending);
+                        },
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minHeight: 40,
+                          ),
+                          child: SizedBox(
+                            width: column.width,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    column.label,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                if (sorting)
+                                  Icon(
+                                    sort.ascending
+                                        ? Icons.arrow_upward
+                                        : Icons.arrow_downward,
+                                    size: iconSize,
+                                  )
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      for (final item in sort.sorted)
+                        InkWell(
+                          onTap: () {
+                            showItemEditor(context, item.id);
+                          },
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(
+                              minHeight: 48,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                for (final column in columns)
+                                  SizedBox(
+                                    width: column.width,
+                                    child: Text(
+                                      column.text(item),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  )
+                              ],
+                            ),
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          );
+        },
       ),
     );
   }
