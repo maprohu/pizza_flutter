@@ -77,7 +77,7 @@ class CalculationPage extends StatelessWidget {
       value: (PizzaCalculatedItem item) => item.item.price,
     ),
     ColumnDef<num>(
-      label: '🫰⨉',
+      label: '＄%',
       value: (PizzaCalculatedItem item) => item.relativePrice,
       width: numberCellWidth,
       cell: (value) => value == 1 ? '🥇' : numberFormat.format(value),
