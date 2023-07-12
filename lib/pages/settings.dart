@@ -2,7 +2,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:mhu_dart_commons/commons.dart';
 import 'package:mhu_flutter_commons/mhu_flutter_commons.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:pizza_flutter/main.dart';
+import 'package:pizza_flutter/pages/help.dart';
 import 'package:pizza_flutter/store.dart';
+
+final packageInfo = PackageInfo.fromPlatform();
 
 class SettingsPage extends StatelessWidget {
   final PizzaValueStore store;
@@ -28,6 +33,41 @@ class SettingsPage extends StatelessWidget {
                 context: context,
                 store: store,
               );
+            },
+          ),
+          ListTile(
+            title: const Text('About'),
+            trailing: IconTheme(
+              data: IconTheme.of(context),
+              child: const Icon(Icons.info),
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return FutureBuilder(
+                    future: packageInfo,
+                    builder: (context, snapshot) {
+                      return AboutDialog(
+                        applicationName: appTitle,
+                        applicationVersion: snapshot.data?.let(
+                          (e) => e.version,
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          ),
+          ListTile(
+            title: const Text('Help'),
+            trailing: IconTheme(
+              data: IconTheme.of(context),
+              child: const Icon(Icons.help),
+            ),
+            onTap: () {
+              showHelp(context);
             },
           )
         ],

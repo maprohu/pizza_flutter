@@ -4,6 +4,7 @@ import 'package:mhu_dart_commons/commons.dart';
 import 'package:mhu_flutter_commons/mhu_flutter_commons.dart';
 import 'package:pizza_flutter/model.dart';
 import 'package:pizza_flutter/pages/calculation.dart';
+import 'package:pizza_flutter/pages/help.dart';
 import 'package:pizza_flutter/pages/settings.dart';
 import 'package:pizza_flutter/store.dart';
 import 'package:timeago_flutter/timeago_flutter.dart';
@@ -23,6 +24,9 @@ class PizzaValueHome extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(appTitle),
+        actions: const [
+          HelpButton(),
+        ],
       ),
       body: RxBuilder(
         rxVal: store.map(

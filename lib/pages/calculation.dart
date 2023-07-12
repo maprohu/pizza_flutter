@@ -7,12 +7,16 @@ import 'package:mhu_flutter_commons/mhu_flutter_commons.dart';
 import 'package:pizza_flutter/model.dart';
 import 'package:pizza_flutter/model_ext.dart';
 import 'package:pizza_flutter/pages/calculation_edit.dart';
+import 'package:pizza_flutter/pages/help.dart';
 
 import '../store.dart';
 
 part 'calculation.freezed.dart';
 
 NumberFormat numberFormat = NumberFormat()..minimumFractionDigits = 0;
+
+const nameCellWidth = 140.0;
+const numberCellWidth = 60.0;
 
 @freezed
 class ColumnDef<T extends Comparable<T>> with _$ColumnDef<T> {
@@ -28,7 +32,7 @@ class ColumnDef<T extends Comparable<T>> with _$ColumnDef<T> {
     required T Function(PizzaCalculatedItem item) value,
   }) =>
       ColumnDef(
-        width: 60,
+        width: numberCellWidth,
         label: label,
         value: value,
         cell: numberFormat.format,
@@ -60,7 +64,7 @@ class CalculationPage extends StatelessWidget {
   late final List<ColumnDef<Comparable<dynamic>>> columns = [
     ColumnDef<String>(
       label: 'Name',
-      width: 140,
+      width: nameCellWidth,
       value: (item) => item.item.label,
       cell: identity,
     ),
@@ -72,9 +76,11 @@ class CalculationPage extends StatelessWidget {
       label: '＄',
       value: (PizzaCalculatedItem item) => item.item.price,
     ),
-    ColumnDef.number(
-      label: '🏆',
+    ColumnDef<num>(
+      label: '🫰⨉',
       value: (PizzaCalculatedItem item) => item.relativePrice,
+      width: numberCellWidth,
+      cell: (value) => value == 1 ? '🥇' : numberFormat.format(value),
     ).also((e) => relativeCostColumn = e),
   ];
 
@@ -151,6 +157,9 @@ class CalculationPage extends StatelessWidget {
                 );
               },
             ),
+            actions: const [
+              HelpButton(),
+            ],
           ),
           bottomNavigationBar: BottomAppBar(
             child: Row(

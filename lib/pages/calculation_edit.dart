@@ -8,6 +8,7 @@ import 'package:pizza_flutter/pages/settings.dart';
 import 'package:pizza_flutter/store.dart';
 
 import '../model.dart';
+import 'help.dart';
 
 class PizzaCalculationItemEditor extends StatelessWidget {
   final PizzaValueStore store;
@@ -145,6 +146,9 @@ class PizzaCalculationItemEditor extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pizza Size Option'),
+        actions: const [
+          HelpButton(),
+        ],
       ),
       body: ListView(
         children: [
