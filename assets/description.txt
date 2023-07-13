@@ -1,0 +1,8 @@
+Calculates which pizza size option is the best value for money.
+
+This app can be used to calculate which pizza size option is the best value for money.
+
+The app is free and displays no ads.
+The source code is available on GitHub: https://github.com/maprohu/pizza_flutter
+
+Bom apetite! :)
