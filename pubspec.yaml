@@ -2,7 +2,7 @@ name: pizza_flutter
 description: An app that compares the price of pizzas of different sizes
 publish_to: 'none'
 
-version: 1.0.3+3
+version: 1.0.4-dev+3
 
 environment:
   sdk: '>=3.0.5 <4.0.0'
@@ -18,10 +18,10 @@ dependencies:
   rxdart: ^0.27.7
   logger: ^1.4.0
   collection: ^1.17.1
-  mhu_dart_commons: ^1.0.5
+  mhu_dart_commons: ^1.0.6
 #  mhu_dart_commons:
 #    path: ../mhu_dart_commons
-  mhu_flutter_commons: ^1.0.3
+  mhu_flutter_commons: ^1.0.4
 #  mhu_flutter_commons:
 #    path: ../mhu_flutter_commons
   timeago_flutter: ^3.5.0
