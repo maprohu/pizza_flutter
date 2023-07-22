@@ -29,7 +29,7 @@ class HelpWidget extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Help'),
       ),
-      body: BusyBuilder(
+      body: futureBuilder(
         future: rootBundle.loadString('assets/help.md'),
         builder: (context, value) {
           return Markdown(
