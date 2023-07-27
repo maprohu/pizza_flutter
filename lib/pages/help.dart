@@ -30,7 +30,7 @@ class HelpWidget extends StatelessWidget {
         title: const Text('Help'),
       ),
       body: futureBuilder(
-        future: rootBundle.loadString('assets/help.md'),
+        future: rootBundle.loadString('assets/description.md'),
         builder: (context, value) {
           return Markdown(
             controller: ScrollController(
